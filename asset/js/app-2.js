@@ -19,9 +19,9 @@ Vue.component('tasks',{
 			return{
 					newTask : "",
 					tasks 	: [
-						{ title :"Laravel",completed:true},
-						{ title :"Vue",completed:true},
-						{ title :"PHP",completed:false}
+						{ id:1 , title :"Laravel",completed:true},
+						{ id:2 , title :"Vue",completed:true},
+						{ id:3 , title :"PHP",completed:false}
 					]
 			} 
 		},
@@ -60,11 +60,12 @@ Vue.component('task',{
 						<label v-text="task.title" @click="edit()"></label>
 						<button class="destroy" @click="remove()"></button>
 					</div>
-        			<input class="edit" 
+        			<input 
 						   v-model="task.title" 
-						   @keyup.enter="doneEdit()" 
+						   @keyup.enter="doneEdit(task.id)" 
 						   @blur="doneEdit()"
                            @keyup.esc="cancelEdit()"
+        				   class="edit" 
 					>
 				</li>`
 	,
@@ -79,9 +80,9 @@ Vue.component('task',{
 			this.cacheBeforeEdit = this.task.title;
 			this.editing = true;
 		},
-		doneEdit : function(){
+		doneEdit : function(id){
 			if(! this.task.title){		
-				this.remove();
+				this.remove(id);
 			}
 			this.editing = false;
 		},
@@ -89,9 +90,13 @@ Vue.component('task',{
 			this.editing = false;
 			this.task.title = this.cacheBeforeEdit;
 		},
-		remove: function(){
-			var tasks = this.$parent.tasks;
-			tasks.splice(tasks.indexOf(this.task),1);
+		remove: function(id){
+			let tasks = this.$parent.tasks;
+            tasks.forEach((key)=>{
+                if(key.id==id){
+                    tasks.splice(tasks.indexOf(this.task),1);
+                }
+            });
 		}
 	},
 	computed: {
